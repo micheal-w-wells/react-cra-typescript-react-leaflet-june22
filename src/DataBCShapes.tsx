@@ -103,5 +103,5 @@ export const buildURLForDataBC = (
         }
     },[])
 
-    return intersectingShapes? <GeoJSON data={intersectingShapes}  key={Math.random()}/> : <></>
+    return intersectingShapes? <GeoJSON data={intersectingShapes} style={{color: 'green'}} key={Math.random()}/> : <></>
   }

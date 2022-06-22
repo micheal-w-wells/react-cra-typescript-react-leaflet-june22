@@ -11,6 +11,9 @@ export default function App() {
   const [map, setMap] = useState<any>(null);
   const [DataBCGeos, setDataBCGeos] = useState(null)
 
+
+  // search boundaries are blue - data filtered by databc is green, and red is filtered by turf.
+
   // featureCollection.features[0] = shape we send to databc
   // featureCollection.features[1] = smaller shape we test for intersect with turf
   const featureCollection: FeatureCollection = {
@@ -101,6 +104,7 @@ export default function App() {
 
       {/*map && <DrawControl map={map} setGeometry={setGeometry} />*/}
       {featureCollection && <GeoJSON data={featureCollection} key={Math.random()} />}
+      
       {featureCollection && <DataBCShapes layerName={'WHSE_WATER_MANAGEMENT.WLS_WATER_RESERVES_POLY'} geometry={featureCollection.features[0]} shapeSetterCallback={setDataBCGeos}/>}
       {featureCollection && DataBCGeos &&  <TurfGeos data={DataBCGeos} filterGeo={featureCollection.features[1]}/>}
     </MapContainer>
