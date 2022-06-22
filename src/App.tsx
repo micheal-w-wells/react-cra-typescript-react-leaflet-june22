@@ -1,23 +1,96 @@
 import { MapContainer, TileLayer, ZoomControl, GeoJSON } from "react-leaflet";
-import "leaflet-editable";
 import "./styles.css";
 import { useState, useEffect } from "react";
+import { DataBCShapes } from "./DataBCShapes";
+import { FeatureCollection } from "@turf/turf";
+import { TurfGeos } from "./TurfGeos";
+import {CRS} from 'leaflet';
+
 
 export default function App() {
   const [map, setMap] = useState<any>(null);
-  const [geometry, setGeometry] = useState();
-  useEffect(() => {
-    if (geometry) console.log(geometry);
-  }, [geometry]);
+  const [DataBCGeos, setDataBCGeos] = useState(null)
+
+  // featureCollection.features[0] = shape we send to databc
+  // featureCollection.features[1] = smaller shape we test for intersect with turf
+  const featureCollection: FeatureCollection = {
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "properties": {},
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -128.95751953125,
+                48.45835188280866
+              ],
+              [
+                -122.05810546875,
+                48.45835188280866
+              ],
+              [
+                -122.05810546875,
+                51.16556659836182
+              ],
+              [
+                -128.95751953125,
+                51.16556659836182
+              ],
+              [
+                -128.95751953125,
+                48.45835188280866
+              ]
+            ]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {},
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                -125.33203125,
+                48.96579381461063
+              ],
+              [
+                -122.93701171874999,
+                48.96579381461063
+              ],
+              [
+                -122.93701171874999,
+                50.387507803003146
+              ],
+              [
+                -125.33203125,
+                50.387507803003146
+              ],
+              [
+                -125.33203125,
+                48.96579381461063
+              ]
+            ]
+          ]
+        }
+      }
+    ]
+  }
+
+
 
   return (
     <MapContainer
       id="map"
       center={[55, -122]}
       zoom={5}
-      scrollWheelZoom={false}
+      scrollWheelZoom={true}
       editable={true}
-      zoomControl={false}
+      zoomControl={true}
       whenCreated={setMap}
     >
       <ZoomControl position="bottomleft" />
@@ -27,7 +100,9 @@ export default function App() {
       />
 
       {/*map && <DrawControl map={map} setGeometry={setGeometry} />*/}
-      {geometry && <GeoJSON data={geometry[0]} key={Math.random()} />}
+      {featureCollection && <GeoJSON data={featureCollection} key={Math.random()} />}
+      {featureCollection && <DataBCShapes layerName={'WHSE_WATER_MANAGEMENT.WLS_WATER_RESERVES_POLY'} geometry={featureCollection.features[0]} shapeSetterCallback={setDataBCGeos}/>}
+      {featureCollection && DataBCGeos &&  <TurfGeos data={DataBCGeos} filterGeo={featureCollection.features[1]}/>}
     </MapContainer>
   );
 }
